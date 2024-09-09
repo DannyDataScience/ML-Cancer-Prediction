@@ -78,7 +78,14 @@ def get_scaled_values(input_dict):
     return scaled_dict
 
 def get_radar_chart(input_data):
-    pio.templates.default = "plotly_dark"
+    # Detectar el tema actual
+    theme_base = st.get_option("theme.base")
+    
+    # Configurar el template de Plotly según el tema
+    if theme_base == 'dark':
+        pio.templates.default = "plotly_dark"
+    else:
+        pio.templates.default = "plotly_white"
 
     input_data = get_scaled_values(input_data)
 
@@ -140,36 +147,32 @@ def add_predictions(input_data):
     st.subheader("Cell cluster prediction")
 
     if prediction[0] == 0:
-            st.markdown(
-                '''
-                <div style="background-color: 
-                #049470; border-radius: 10px; padding: 10px; text-align: center; display: inline-block; width: auto; max-width: 100%; margin: 0px 20px 20px 0px;">
-                    <p style="color: white; margin: 0; display: inline;">Benign</p>
-                </div>
-                ''',
-                unsafe_allow_html=True
-            )
-
-
+        st.markdown(
+            f'''
+            <div style="background-color: #049470; border-radius: 10px; padding: 10px; text-align: center; display: inline-block; width: auto; max-width: 100%; margin: 0px 20px 20px 0px;">
+                <p style="color:white; margin: 0; display: inline;">Benign</p>
+            </div>
+            ''',
+            unsafe_allow_html=True
+        )
     else:
         st.markdown(
-                '''
-                <div style="background-color: 
-                #a94030; border-radius: 10px; padding: 10px; text-align: center; display: inline-block; width: auto; max-width: 100%; margin: 0px 20px 20px 0px;">
-                    <p style="color: white; margin: 0; display: inline;">Malignant</p>
-                </div>
-                ''',
-                unsafe_allow_html=True
-            )        
+            f'''
+            <div style="background-color: #a94030; border-radius: 10px; padding: 10px; text-align: center; display: inline-block; width: auto; max-width: 100%; margin: 0px 20px 20px 0px;">
+                <p style="color:white; margin: 0; display: inline;">Malignant</p>
+            </div>
+            ''',
+            unsafe_allow_html=True
+        ) 
 
     prob_benign = (model.predict_proba(input_array_scaled)[0][0]) * 100
 
     prob_malignant = (model.predict_proba(input_array_scaled)[0][1]) * 100
 
-    st.markdown(f'<p style="color:white; display:inline;">Probability of being benign: </p>'
+    st.markdown(f'<p style="display:inline;">Probability of being benign: </p>'
             f'<p style="color:#AA41FB; display:inline;">{round(prob_benign, 2)}%</p>', unsafe_allow_html=True)
 
-    st.markdown(f'<p style="color:white; display:inline;">Probability of being malignant: </p>'
+    st.markdown(f'<p style="display:inline;">Probability of being malignant: </p>'
             f'<p style="color:#AA41FB; display:inline;">{round(prob_malignant, 2)}%</p>', unsafe_allow_html=True)
     
     st.write(" ")
@@ -200,6 +203,7 @@ def main():
     with col2:
         with st.container(border=True):
             add_predictions(input_data)
+ 
 
 if __name__ == '__main__':
     main()
