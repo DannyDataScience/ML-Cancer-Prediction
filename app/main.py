@@ -81,6 +81,7 @@ def get_radar_chart(input_data):
     # Detectar el tema actual
     theme_base = st.get_option("theme.base")
     
+
     # Configurar el template de Plotly según el tema
     if theme_base == 'dark':
         pio.templates.default = "plotly_dark"
